@@ -97,12 +97,7 @@
 					}
 
 					if(!error.status){
-						board.start(errorHandler);
-						$(".error").hide();
-						$("#startButton").attr("disabled", "disabled");
-						$("#stopButton").removeAttr("disabled");
-						$("#loginContainer").hide();
-						$("#boardContainer").show();
+						board.checkPassword();
 					} else {
 						var errormsg = "";
 						if(error.server)
@@ -116,7 +111,7 @@
 					}
 				});
 				$("#startButton").click(function(){
-					board.start(errorHandler);					
+					board.start();					
 					$("#startButton").attr("disabled", "disabled");
 					$("#stopButton").removeAttr("disabled");
 				});

@@ -33,7 +33,6 @@ GMN.Admin.Board = function(_options) {
 				$(".boardTableContainer").html(html);
 
 
-
 			} else {
 				stop();
 				$("#startButton").removeAttr("disabled");
@@ -74,6 +73,21 @@ GMN.Admin.Board = function(_options) {
 
 	var checkPassword = function(){
 		console.log("Checking password");
+		getData(function(data,status){
+			console.log(status);
+			if(status === 200) {
+				start();
+				$(".error").hide();
+				$("#startButton").attr("disabled", "disabled");
+				$("#stopButton").removeAttr("disabled");
+				$("#loginContainer").hide();
+				$("#boardContainer").show();
+			} else if(status === 401){
+				$(".error").text("ERROR: La contrasena de administrador es incorrecta.").show();
+			} else {
+				$(".error").text("Error desconocido. Numero de error: " + status).show();
+			}
+		});
 	}
 
 	var stop = function() {
@@ -85,6 +99,7 @@ GMN.Admin.Board = function(_options) {
 	return {
 		"start":start,
 		"stop":stop,
-		"reset":reset
+		"reset":reset,
+		"checkPassword":checkPassword
 	}
 }
