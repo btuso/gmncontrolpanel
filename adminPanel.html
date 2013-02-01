@@ -56,8 +56,8 @@
 					$("#loginContainer").show();
 					$(".error").text("ERROR " + status + ": " + msg.message).show();
 				}
-				/*-----Validacion del servidor-----*/
-				/*---Inicio de validacion---*/
+				/*-----Validacion del servidor y puerto-----*/
+				/*---Inicio de validacion servidor---*/
 				var validateServer = function(){
 					if ($("#serverName").val().indexOf("http://") !== 0)
             			$("#serverName").val("http://" + $("#serverName").val());
@@ -67,7 +67,18 @@
     			}).change(function(){
     				validateServer();
     			});
-    			/*---Fin de validacion--*/
+    			/*---Fin de validacion servidor---*/
+    			/*---Inicio de validacion puerto // permitir solo escribir numeros---*/
+    			onlyNumbers  = function(evt){
+    				var keyPressed = (evt.which) ? evt.which : evt.keyCode
+					return !(keyPressed > 31 && (keyPressed < 48 || keyPressed > 57));
+    			}
+    			$("#serverPort").on('keypress',function(){
+    				return onlyNumbers(event);
+    			}).on('paste',function(){
+    				return false;
+    			});
+    			/*---Fin de validacion puerto---*/
 				$("#loginButton").click(function(){
 					GMN.Server.Config.setServer($("#serverName").val());
 					GMN.Server.Config.setPort($("#serverPort").val());
