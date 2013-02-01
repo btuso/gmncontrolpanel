@@ -56,7 +56,18 @@
 					$("#loginContainer").show();
 					$(".error").text("ERROR " + status + ": " + msg.message).show();
 				}
-
+				/*-----Validacion del servidor-----*/
+				/*---Inicio de validacion---*/
+				var validateServer = function(){
+					if ($("#serverName").val().indexOf("http://") !== 0)
+            			$("#serverName").val("http://" + $("#serverName").val());
+				}
+				$("#serverName").focusout(function(){
+        			validateServer();
+    			}).change(function(){
+    				validateServer();
+    			});
+    			/*---Fin de validacion--*/
 				$("#loginButton").click(function(){
 					var error = {"status":false,"server":false,"port":false,"password":false};
 
