@@ -61,6 +61,8 @@
 				var validateServer = function(){
 					if ($("#serverName").val().indexOf("http://") !== 0)
             			$("#serverName").val("http://" + $("#serverName").val());
+            		if($("#serverName").val().substring($("#serverName").val().length - 1) == "/")
+						$("#serverName").val($("#serverName").val().substring(0, $("#serverName").val().length - 1));
 				}
 				$("#serverName").focusout(function(){
         			validateServer();
