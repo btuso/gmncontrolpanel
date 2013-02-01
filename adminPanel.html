@@ -87,8 +87,7 @@
 					GMN.Server.Config.setServer($("#serverName").val());
 					GMN.Server.Config.setPort($("#serverPort").val());
 					
-					//Hacer lo mismo que abajo para lo de arriba
-					
+					//Regex para comparar contraseña a alfanumerico
 					if(!((/[^(0-9)(a-z)]/gi).test($("#adminPassword").val())))
 						GMN.Server.Config.setAdminPassword($("#adminPassword").val());
 					else{
@@ -98,7 +97,7 @@
 
 					if(!error.status){
 						board.checkPassword();
-					} else {
+					} else {//Display de mensajes de error
 						var errormsg = "";
 						if(error.server)
 							errormsg += "ESTA MAL EL SERVER \n"
