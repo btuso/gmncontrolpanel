@@ -85,6 +85,10 @@
 						$(".error").text("ERROR: " + errormsg).show();						
 					}
 				});
+				$("#version").click(function(){
+					board.version();
+					$("#version").attr("disabled", "disabled");	
+				})
 				$("#startButton").click(function(){
 					board.start();					
 					$("#startButton").attr("disabled", "disabled");
@@ -192,6 +196,7 @@
 		</div>
 		<div id="boardContainer" style="display:none;">
 			<div class="controlPanel">
+				<input type="button" id="version" value="Version">
 				<input type="button" id="logoutButton" value="Logout">
 				<input type="button" id="stopButton" value="Stop">
 				<input type="button" id="startButton" value="Start">
