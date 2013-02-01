@@ -89,15 +89,15 @@
 					
 					//Hacer lo mismo que abajo para lo de arriba
 					
-					if(!((/[^0-z]/gi).test($("#adminPassword").val())))
+					if(!((/[^(0-9)(a-z)]/gi).test($("#adminPassword").val())))
 						GMN.Server.Config.setAdminPassword($("#adminPassword").val());
 					else{
 							error.password = true;
 							error.status = true;
 					}
 
-					board.start(errorHandler);
 					if(!error.status){
+						board.start(errorHandler);
 						$(".error").hide();
 						$("#startButton").attr("disabled", "disabled");
 						$("#stopButton").removeAttr("disabled");

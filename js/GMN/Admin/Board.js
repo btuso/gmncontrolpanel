@@ -56,6 +56,10 @@ GMN.Admin.Board = function(_options) {
 		boardTimer = setTimeout(refreshBoard, options.refreshBoardInterval);
 	}
 
+	var checkPassword = function(){
+		console.log("Checking password");
+	}
+
 	var stop = function() {
 		started = false;
 		console.log("stoping");
