@@ -56,7 +56,31 @@
 					$("#loginContainer").show();
 					$(".error").text("ERROR " + status + ": " + msg.message).show();
 				}
-				/*-----Validacion del servidor y puerto-----*/
+				/*-----Validacion del servi_optionsdor y puerto-----*/
+				/*--Funcion de checkeo de respuesta de server--*/
+				var checkServer = function(){
+					$.ajax({
+						type: "GET",
+						url: $("#serverName").val() + ':' + $("#serverPort").val() + '/version',
+						async: true,
+						success: function(data,status,xhr){
+							if(xhr.readyState == 4)
+								if(xhr.status == 200)
+								{
+									$("#serverName").css({'background-color' : '#6EDA60'});
+									$("#serverPort").css({'background-color' : '#6EDA60'});
+								}
+						},
+						error: function(jqXHR){
+							if(jqXHR.readyState <= 0)
+								{
+									$("#serverName").css({'background-color' : '#FF6666'});
+									$("#serverPort").css({'background-color' : '#FF6666'});
+								}
+						}
+					});
+				}
+				/*--Fin de funcion de checkeo--*/
 				/*---Inicio de validacion servidor---*/
 				var validateServer = function(){
 					if ($("#serverName").val().indexOf("http://") !== 0)
@@ -66,8 +90,10 @@
 				}
 				$("#serverName").focusout(function(){
         			validateServer();
+        			checkServer();
     			}).change(function(){
     				validateServer();
+    				checkServer();
     			});
     			/*---Fin de validacion servidor---*/
     			/*---Inicio de validacion puerto // permitir solo escribir numeros---*/
@@ -79,8 +105,13 @@
     				return onlyNumbers(event);
     			}).on('paste',function(){
     				return false;
-    			});
+    			}).focusout(function(){
+    				checkServer();
+        		}).change(function(){
+        			checkServer();
+        		});
     			/*---Fin de validacion puerto---*/
+    			/*--------*/
 				$("#loginButton").click(function(){
 					var error = {"status":false,"server":false,"port":false,"password":false};
 
@@ -96,8 +127,8 @@
 							error.status = true;
 					}
 
-					board.start(errorHandler);
 					if(!error.status){
+						board.start(errorHandler);
 						$("#startButton").attr("disabled", "disabled");
 						$("#stopButton").removeAttr("disabled");
 						$("#loginContainer").hide();
