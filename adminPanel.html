@@ -132,10 +132,13 @@
 					$("#boardContainer").hide();
 					$("#loginContainer").show();				
 				});
+				$("#resetButton").click(function(){
+					board.reset();				
+				});
 			})
 		</script>
 		<script id="board" type="text/x-handlebars-template">
-			<table>
+			<table id="adminBoard">
 				<tr>
 					<th>Name</th>
 					<th>Ip Address</th>
@@ -193,9 +196,9 @@
 	<body>
 		<div class="login" id="loginContainer">
 			<label for="serverName">Server:</label>
-			<input type="text" id="serverName" value="http://guessmynumber.jurgens.com.ar">
+			<input type="text" id="serverName" value="http://10.114.3.10">
 			<label for="serverPort">Port:</label>
-			<input type="text" id="serverPort" value="80">
+			<input type="text" id="serverPort" value="8012">
 			<label for="adminPassword">Password:</label>
 			<input type="password" id="adminPassword" value="1234">
 			<input type="button" id="loginButton" value="Login">
@@ -206,6 +209,7 @@
 				<input type="button" id="logoutButton" value="Logout">
 				<input type="button" id="stopButton" value="Stop">
 				<input type="button" id="startButton" value="Start">
+				<input type="button" id="resetButton" value="Reset">
 				<div class="error">ERROR ERROR ERROR ERROR</div>
 			</div>
 			<div class="boardTableContainer">
