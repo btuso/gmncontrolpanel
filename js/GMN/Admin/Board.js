@@ -71,9 +71,6 @@ GMN.Admin.Board = function(_options) {
         })
 
         Request.fail(function(jqXHR, textStatus) {
-            if(jqXHR.status == 401)
-            	$(".error").text("ERROR: La contraseña de administrador es incorrecta.").show();
-            else
                 $(".error").text("Error desconocido. Numero de error: " + jqXHR.status).show();
         })
 	}
