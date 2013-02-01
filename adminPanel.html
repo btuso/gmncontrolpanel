@@ -85,6 +85,7 @@
 
 					board.start(errorHandler);
 					if(!error.status){
+						$(".error").hide();
 						$("#startButton").attr("disabled", "disabled");
 						$("#stopButton").removeAttr("disabled");
 						$("#loginContainer").hide();
