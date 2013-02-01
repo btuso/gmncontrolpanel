@@ -20,6 +20,19 @@ GMN.Admin.Board = function(_options) {
 		})
 	}
 
+	var version = function () {
+		$.ajax({
+			"url":GMN.Server.Config.getServer() + ":" + GMN.Server.Config.getPort() + "/version",
+			"complete":function (data) {
+				var res = JSON.parse(data.responseText);
+				if (data.status === 200){
+					$("#version").val("Version :" + res.version);
+					console.log("Version "+ res.version);
+				}
+			}
+		})
+	}
+
 	var refreshBoard = function() {
 		getData(function(data,status){
 			console.log(status);
@@ -97,6 +110,7 @@ GMN.Admin.Board = function(_options) {
 		"start":start,
 		"stop":stop,
 		"reset":reset,
+		"version":version,
 		"checkPassword":checkPassword
 	}
 }

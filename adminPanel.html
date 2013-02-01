@@ -14,6 +14,7 @@
 		<script type="text/javascript" src="js/GMN/Server/Config.js"></script>
 		<script type="text/javascript" src="js/GMN/Server/Config.js"></script>
 		<script type="text/javascript" src="js/GMN/Admin/Board.js"></script>
+		<script type="text/javascript" src="js/GMN/Functions/Validation.js"></script>
 		<script type="text/javascript">
 			Handlebars.registerHelper('lastAttemp', function(serverTime,attempTime) {
 				function mask(number) {
@@ -47,7 +48,6 @@
 		<script type="text/javascript">
 			$(window).ready(function(){
 				var board = GMN.Admin.Board();
-
 				var errorHandler = function(status, msg){
 					board.stop();
 					$("#startButton").removeAttr("disabled");
@@ -56,31 +56,6 @@
 					$("#loginContainer").show();
 					$(".error").text("ERROR " + status + ": " + msg.message).show();
 				}
-				/*-----Validacion del servidor y puerto-----*/
-				/*---Inicio de validacion servidor---*/
-				var validateServer = function(){
-					if ($("#serverName").val().indexOf("http://") !== 0)
-            			$("#serverName").val("http://" + $("#serverName").val());
-            		if($("#serverName").val().substring($("#serverName").val().length - 1) == "/")
-						$("#serverName").val($("#serverName").val().substring(0, $("#serverName").val().length - 1));
-				}
-				$("#serverName").focusout(function(){
-        			validateServer();
-    			}).change(function(){
-    				validateServer();
-    			});
-    			/*---Fin de validacion servidor---*/
-    			/*---Inicio de validacion puerto // permitir solo escribir numeros---*/
-    			onlyNumbers  = function(evt){
-    				var keyPressed = (evt.which) ? evt.which : evt.keyCode
-					return !(keyPressed > 31 && (keyPressed < 48 || keyPressed > 57));
-    			}
-    			$("#serverPort").on('keypress',function(){
-    				return onlyNumbers(event);
-    			}).on('paste',function(){
-    				return false;
-    			});
-    			/*---Fin de validacion puerto---*/
 				$("#loginButton").click(function(){
 					var error = {"status":false,"server":false,"port":false,"password":false};
 
@@ -109,6 +84,10 @@
 						$(".error").text("ERROR: " + errormsg).show();						
 					}
 				});
+				$("#version").click(function(){
+					board.version();
+					$("#version").attr("disabled", "disabled");	
+				})
 				$("#startButton").click(function(){
 					board.start();					
 					$("#startButton").attr("disabled", "disabled");
@@ -129,6 +108,22 @@
 				$("#resetButton").click(function(){
 					board.reset();				
 				});
+				$("#serverName").focusout(function(){
+        			validateServer();
+        			checkServer();
+    			}).change(function(){
+    				validateServer();
+    				checkServer();
+    			});
+				$("#serverPort").on('keypress',function(){
+    				return onlyNumbers(event);
+    			}).on('paste',function(){
+    				return false;
+    			}).focusout(function(){
+    				checkServer();
+        		}).change(function(){
+        			checkServer();
+        		});
 			})
 		</script>
 		<script id="board" type="text/x-handlebars-template">
@@ -200,6 +195,7 @@
 		</div>
 		<div id="boardContainer" style="display:none;">
 			<div class="controlPanel">
+				<input type="button" id="version" value="Version">
 				<input type="button" id="logoutButton" value="Logout">
 				<input type="button" id="stopButton" value="Stop">
 				<input type="button" id="startButton" value="Start">
