@@ -14,6 +14,7 @@
 		<script type="text/javascript" src="js/GMN/Server/Config.js"></script>
 		<script type="text/javascript" src="js/GMN/Server/Config.js"></script>
 		<script type="text/javascript" src="js/GMN/Admin/Board.js"></script>
+		<script type="text/javascript" src="js/GMN/Functions/Validation.js"></script>
 		<script type="text/javascript">
 			Handlebars.registerHelper('lastAttemp', function(serverTime,attempTime) {
 				function mask(number) {
@@ -47,7 +48,6 @@
 		<script type="text/javascript">
 			$(window).ready(function(){
 				var board = GMN.Admin.Board();
-
 				var errorHandler = function(status, msg){
 					board.stop();
 					$("#startButton").removeAttr("disabled");
@@ -56,62 +56,6 @@
 					$("#loginContainer").show();
 					$(".error").text("ERROR " + status + ": " + msg.message).show();
 				}
-				/*-----Validacion del servi_optionsdor y puerto-----*/
-				/*--Funcion de checkeo de respuesta de server--*/
-				var checkServer = function(){
-					$.ajax({
-						type: "GET",
-						url: $("#serverName").val() + ':' + $("#serverPort").val() + '/version',
-						async: true,
-						success: function(data,status,xhr){
-							if(xhr.readyState == 4)
-								if(xhr.status == 200)
-								{
-									$("#serverName").css({'background-color' : '#6EDA60'});
-									$("#serverPort").css({'background-color' : '#6EDA60'});
-								}
-						},
-						error: function(jqXHR){
-							if(jqXHR.readyState <= 0)
-								{
-									$("#serverName").css({'background-color' : '#FF6666'});
-									$("#serverPort").css({'background-color' : '#FF6666'});
-								}
-						}
-					});
-				}
-				/*--Fin de funcion de checkeo--*/
-				/*---Inicio de validacion servidor---*/
-				var validateServer = function(){
-					if ($("#serverName").val().indexOf("http://") !== 0)
-            			$("#serverName").val("http://" + $("#serverName").val());
-            		if($("#serverName").val().substring($("#serverName").val().length - 1) == "/")
-						$("#serverName").val($("#serverName").val().substring(0, $("#serverName").val().length - 1));
-				}
-				$("#serverName").focusout(function(){
-        			validateServer();
-        			checkServer();
-    			}).change(function(){
-    				validateServer();
-    				checkServer();
-    			});
-    			/*---Fin de validacion servidor---*/
-    			/*---Inicio de validacion puerto // permitir solo escribir numeros---*/
-    			onlyNumbers  = function(evt){
-    				var keyPressed = (evt.which) ? evt.which : evt.keyCode
-					return !(keyPressed > 31 && (keyPressed < 48 || keyPressed > 57));
-    			}
-    			$("#serverPort").on('keypress',function(){
-    				return onlyNumbers(event);
-    			}).on('paste',function(){
-    				return false;
-    			}).focusout(function(){
-    				checkServer();
-        		}).change(function(){
-        			checkServer();
-        		});
-    			/*---Fin de validacion puerto---*/
-    			/*--------*/
 				$("#loginButton").click(function(){
 					var error = {"status":false,"server":false,"port":false,"password":false};
 
@@ -120,7 +64,7 @@
 					
 					//Hacer lo mismo que abajo para lo de arriba
 					
-					if(!((/[^0-z]/gi).test($("#adminPassword").val())))
+					if(!((/[^(0-9)(a-z)]/gi).test($("#adminPassword").val())))
 						GMN.Server.Config.setAdminPassword($("#adminPassword").val());
 					else{
 							error.password = true;
@@ -128,11 +72,7 @@
 					}
 
 					if(!error.status){
-						board.start(errorHandler);
-						$("#startButton").attr("disabled", "disabled");
-						$("#stopButton").removeAttr("disabled");
-						$("#loginContainer").hide();
-						$("#boardContainer").show();
+						board.checkPassword();
 					} else {
 						var errormsg = "";
 						if(error.server)
@@ -146,7 +86,7 @@
 					}
 				});
 				$("#startButton").click(function(){
-					board.start(errorHandler);					
+					board.start();					
 					$("#startButton").attr("disabled", "disabled");
 					$("#stopButton").removeAttr("disabled");
 				});
@@ -162,10 +102,29 @@
 					$("#boardContainer").hide();
 					$("#loginContainer").show();				
 				});
+				$("#resetButton").click(function(){
+					board.reset();				
+				});
+				$("#serverName").focusout(function(){
+        			validateServer();
+        			checkServer();
+    			}).change(function(){
+    				validateServer();
+    				checkServer();
+    			});
+				$("#serverPort").on('keypress',function(){
+    				return onlyNumbers(event);
+    			}).on('paste',function(){
+    				return false;
+    			}).focusout(function(){
+    				checkServer();
+        		}).change(function(){
+        			checkServer();
+        		});
 			})
 		</script>
 		<script id="board" type="text/x-handlebars-template">
-			<table>
+			<table id="adminBoard">
 				<tr>
 					<th>Name</th>
 					<th>Ip Address</th>
@@ -223,9 +182,9 @@
 	<body>
 		<div class="login" id="loginContainer">
 			<label for="serverName">Server:</label>
-			<input type="text" id="serverName" value="http://guessmynumber.jurgens.com.ar">
+			<input type="text" id="serverName" value="http://10.114.3.10">
 			<label for="serverPort">Port:</label>
-			<input type="text" id="serverPort" value="80">
+			<input type="text" id="serverPort" value="8012">
 			<label for="adminPassword">Password:</label>
 			<input type="password" id="adminPassword" value="1234">
 			<input type="button" id="loginButton" value="Login">
@@ -236,6 +195,7 @@
 				<input type="button" id="logoutButton" value="Logout">
 				<input type="button" id="stopButton" value="Stop">
 				<input type="button" id="startButton" value="Start">
+				<input type="button" id="resetButton" value="Reset">
 				<div class="error">ERROR ERROR ERROR ERROR</div>
 			</div>
 			<div class="boardTableContainer">

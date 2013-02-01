@@ -33,7 +33,6 @@ GMN.Admin.Board = function(_options) {
 				$(".boardTableContainer").html(html);
 
 
-
 			} else {
 				stop();
 				$("#startButton").removeAttr("disabled");
@@ -50,10 +49,45 @@ GMN.Admin.Board = function(_options) {
 		});
 	}
 
+	var reset = function() {
+        var Url = GMN.Server.Config.getServer() + ":" + GMN.Server.Config.getPort() + "/admin/reset/" + GMN.Server.Config.getAdminPassword();
+        var Request = $.ajax({ type: "GET", url: Url, dataType: "json" });
+
+        Request.done(function(response) {
+        	$("#adminBoard").fadeOut("fast", function() { $("#adminBoard").fadeIn("fast"); });
+        })
+
+        Request.fail(function(jqXHR, textStatus) {
+            if(jqXHR.status == 401)
+            	$(".error").text("ERROR: La contraseña de administrador es incorrecta.").show();
+            else
+                $(".error").text("Error desconocido. Numero de error: " + jqXHR.status).show();
+        })
+	}
+
 	var start = function() {
 		started = true;
 		console.log("starting");
 		boardTimer = setTimeout(refreshBoard, options.refreshBoardInterval);
+	}
+
+	var checkPassword = function(){
+		console.log("Checking password");
+		getData(function(data,status){
+			console.log(status);
+			if(status === 200) {
+				start();
+				$(".error").hide();
+				$("#startButton").attr("disabled", "disabled");
+				$("#stopButton").removeAttr("disabled");
+				$("#loginContainer").hide();
+				$("#boardContainer").show();
+			} else if(status === 401){
+				$(".error").text("ERROR: La contrasena de administrador es incorrecta.").show();
+			} else {
+				$(".error").text("Error desconocido. Numero de error: " + status).show();
+			}
+		});
 	}
 
 	var stop = function() {
@@ -64,6 +98,8 @@ GMN.Admin.Board = function(_options) {
 
 	return {
 		"start":start,
-		"stop":stop
+		"stop":stop,
+		"reset":reset,
+		"checkPassword":checkPassword
 	}
 }
