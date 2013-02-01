@@ -58,14 +58,37 @@
 				}
 
 				$("#loginButton").click(function(){
+					var error = {"status":false,"server":false,"port":false,"password":false};
+
 					GMN.Server.Config.setServer($("#serverName").val());
 					GMN.Server.Config.setPort($("#serverPort").val());
-					GMN.Server.Config.setAdminPassword($("#adminPassword").val());
+					
+					//Hacer lo mismo que abajo para lo de arriba
+					
+					if(!((/[^0-z]/gi).test($("#adminPassword").val())))
+						GMN.Server.Config.setAdminPassword($("#adminPassword").val());
+					else{
+							error.password = true;
+							error.status = true;
+					}
+
 					board.start(errorHandler);
-					$("#startButton").attr("disabled", "disabled");
-					$("#stopButton").removeAttr("disabled");
-					$("#loginContainer").hide();
-					$("#boardContainer").show();
+					if(!error.status){
+						$("#startButton").attr("disabled", "disabled");
+						$("#stopButton").removeAttr("disabled");
+						$("#loginContainer").hide();
+						$("#boardContainer").show();
+					} else {
+						var errormsg = "";
+						if(error.server)
+							errormsg += "ESTA MAL EL SERVER \n"
+						if(error.port)
+							errormsg += "ESTA MAL EL PORT \n"
+						if(error.password)
+							errormsg += "La contrasena solo puede contener caractares alfanumericos.\n"
+						
+						$(".error").text("ERROR: " + errormsg).show();						
+					}
 				});
 				$("#startButton").click(function(){
 					board.start(errorHandler);					
