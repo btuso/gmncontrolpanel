@@ -131,6 +131,9 @@
 					$("#boardContainer").hide();
 					$("#loginContainer").show();				
 				});
+				$("#resetButton").click(function(){
+					board.reset();				
+				});
 			})
 		</script>
 		<script id="board" type="text/x-handlebars-template">
@@ -205,6 +208,7 @@
 				<input type="button" id="logoutButton" value="Logout">
 				<input type="button" id="stopButton" value="Stop">
 				<input type="button" id="startButton" value="Start">
+				<input type="button" id="resetButton" value="Reset">
 				<div class="error">ERROR ERROR ERROR ERROR</div>
 			</div>
 			<div class="boardTableContainer">
