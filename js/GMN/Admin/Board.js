@@ -50,6 +50,22 @@ GMN.Admin.Board = function(_options) {
 		});
 	}
 
+	var reset = function() {
+        var Url = GMN.Server.Config.getServer() + ":" + GMN.Server.Config.getPort() + "/admin/reset/" + GMN.Server.Config.getAdminPassword();
+        var Request = $.ajax({ type: "GET", url: Url, dataType: "json" });
+
+        Request.done(function(response) {
+        	alert("Se ha reiniciado el tablero correctamente.");
+        })
+
+        Request.fail(function(jqXHR, textStatus) {
+            if(jqXHR.status == 401)
+                alert("La contraseña de administrador es incorrecta.");
+            else
+                alert("Error desconocido. Numero de error: " + jqXHR.status);
+        })
+	}
+
 	var start = function() {
 		started = true;
 		console.log("starting");
@@ -64,6 +80,7 @@ GMN.Admin.Board = function(_options) {
 
 	return {
 		"start":start,
-		"stop":stop
+		"stop":stop,
+		"reset":reset
 	}
 }
