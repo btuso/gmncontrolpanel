@@ -56,63 +56,27 @@
 					$("#loginContainer").show();
 					$(".error").text("ERROR " + status + ": " + msg.message).show();
 				}
-				/*-----Validacion del servidor y puerto-----*/
-				/*---Inicio de validacion servidor---*/
+				/*-----Validacion del servidor-----*/
+				/*---Inicio de validacion---*/
 				var validateServer = function(){
 					if ($("#serverName").val().indexOf("http://") !== 0)
             			$("#serverName").val("http://" + $("#serverName").val());
-            		if($("#serverName").val().substring($("#serverName").val().length - 1) == "/")
-						$("#serverName").val($("#serverName").val().substring(0, $("#serverName").val().length - 1));
 				}
 				$("#serverName").focusout(function(){
         			validateServer();
     			}).change(function(){
     				validateServer();
     			});
-    			/*---Fin de validacion servidor---*/
-    			/*---Inicio de validacion puerto // permitir solo escribir numeros---*/
-    			onlyNumbers  = function(evt){
-    				var keyPressed = (evt.which) ? evt.which : evt.keyCode
-					return !(keyPressed > 31 && (keyPressed < 48 || keyPressed > 57));
-    			}
-    			$("#serverPort").on('keypress',function(){
-    				return onlyNumbers(event);
-    			}).on('paste',function(){
-    				return false;
-    			});
-    			/*---Fin de validacion puerto---*/
+    			/*---Fin de validacion--*/
 				$("#loginButton").click(function(){
-					var error = {"status":false,"server":false,"port":false,"password":false};
-
 					GMN.Server.Config.setServer($("#serverName").val());
 					GMN.Server.Config.setPort($("#serverPort").val());
-					
-					//Hacer lo mismo que abajo para lo de arriba
-					
-					if(!((/[^0-z]/gi).test($("#adminPassword").val())))
-						GMN.Server.Config.setAdminPassword($("#adminPassword").val());
-					else{
-							error.password = true;
-							error.status = true;
-					}
-
+					GMN.Server.Config.setAdminPassword($("#adminPassword").val());
 					board.start(errorHandler);
-					if(!error.status){
-						$("#startButton").attr("disabled", "disabled");
-						$("#stopButton").removeAttr("disabled");
-						$("#loginContainer").hide();
-						$("#boardContainer").show();
-					} else {
-						var errormsg = "";
-						if(error.server)
-							errormsg += "ESTA MAL EL SERVER \n"
-						if(error.port)
-							errormsg += "ESTA MAL EL PORT \n"
-						if(error.password)
-							errormsg += "La contrasena solo puede contener caractares alfanumericos.\n"
-						
-						$(".error").text("ERROR: " + errormsg).show();						
-					}
+					$("#startButton").attr("disabled", "disabled");
+					$("#stopButton").removeAttr("disabled");
+					$("#loginContainer").hide();
+					$("#boardContainer").show();
 				});
 				$("#startButton").click(function(){
 					board.start(errorHandler);					
