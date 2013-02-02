@@ -55,7 +55,7 @@ GMN.Admin.Board = function(_options) {
         var Request = $.ajax({ type: "GET", url: Url, dataType: "json" });
 
         Request.done(function(response) {
-        	alert("Se ha reiniciado el tablero correctamente.");
+        	$("#adminBoard").fadeOut("fast", function() { $("#adminBoard").fadeIn("fast"); });
         })
 
         Request.fail(function(jqXHR, textStatus) {
