@@ -7,6 +7,7 @@
 		<link rel="stylesheet" href="css/main.css">
 		<link rel="stylesheet" href="css/login.css">
 		<link rel="stylesheet" href="css/board.css">
+		<link rel="stylesheet" href="css/graphs.css">
 
 		<script type="text/javascript" src="js/libs/jquery-1.7.1.min.js"></script>
 		<script type="text/javascript" src="js/libs/handlebars-1.0.rc.1.js"></script>
@@ -15,6 +16,8 @@
 		<script type="text/javascript" src="js/GMN/Server/Config.js"></script>
 		<script type="text/javascript" src="js/GMN/Admin/Board.js"></script>
 		<script type="text/javascript" src="js/GMN/Functions/Validation.js"></script>
+		<script type="text/javascript" src="js/GMN/Stats/getStats.js"></script>
+		<script type="text/javascript" src="js/GMN/Stats/updateGraph.js"></script>
 		<script type="text/javascript">
 			Handlebars.registerHelper('lastAttemp', function(serverTime,attempTime) {
 				function mask(number) {
@@ -48,6 +51,7 @@
 		<script type="text/javascript">
 			$(window).ready(function(){
 				var board = GMN.Admin.Board();
+				var graph = GMN.Stats.updateGraph();
 				var errorHandler = function(status, msg){
 					board.stop();
 					$("#startButton").removeAttr("disabled");
@@ -106,6 +110,14 @@
 				});
 				$("#resetButton").click(function(){
 					board.reset();				
+				});
+				$("#statsButton").click(function(){
+					board.stop();
+					$("#startButton").removeAttr("disabled");
+					$("#stopButton").attr("disabled", "disabled");
+					$("#boardContainer").hide();
+					$("#canvas").show();
+					graph.start();
 				});
 				$("#serverName").focusout(function(){
         			validateServer();
@@ -184,9 +196,9 @@
 	<body>
 		<div class="login" id="loginContainer">
 			<label for="serverName">Server:</label>
-			<input type="text" id="serverName" value="http://10.114.3.10">
+			<input type="text" id="serverName" value="http://127.0.0.1"><!--10.114.3.10-->
 			<label for="serverPort">Port:</label>
-			<input type="text" id="serverPort" value="8012">
+			<input type="text" id="serverPort" value="9999"><!--8012-->
 			<label for="adminPassword">Password:</label>
 			<input type="password" id="adminPassword" value="1234">
 			<input type="button" id="loginButton" value="Login">
@@ -199,11 +211,20 @@
 				<input type="button" id="stopButton" value="Stop">
 				<input type="button" id="startButton" value="Start">
 				<input type="button" id="resetButton" value="Reset">
+				<input type="button" id="statsButton" value="Stats">
 				<div class="error">ERROR ERROR ERROR ERROR</div>
 			</div>
 			<div class="boardTableContainer">
 			</div>
 		</div>
-
+		<!-- Empieza canvas HTML5 -->
+		<div id="canvas">
+			<p id="Ytext"></p>
+			<p id="Yscale"></p>
+			<canvas id="myCanvas"></canvas>
+			<p id="Xscale"></p>
+			<p id="Xtext"></p>
+		</div>
+		<!-- Termina canvas HTML5 -->
 	</body>
 </html>
