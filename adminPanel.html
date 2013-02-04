@@ -57,6 +57,7 @@
 					$("#startButton").removeAttr("disabled");
 					$("#stopButton").attr("disabled", "disabled");
 					$("#boardContainer").hide();
+					$("#canvas").hide();
 					$("#loginContainer").show();
 					$(".error").text("ERROR " + status + ": " + msg.message).show();
 				}
@@ -107,7 +108,9 @@
 					$("#startButton").removeAttr("disabled");
 					$("#stopButton").attr("disabled", "disabled");
 					$("#boardContainer").hide();
-					$("#loginContainer").show();				
+					$("#loginContainer").show();
+					graph.stop();
+					$("#canvas").hide();
 				});
 				$("#resetButton").click(function(){
 					board.reset();				
@@ -116,9 +119,25 @@
 					board.stop();
 					$("#startButton").removeAttr("disabled");
 					$("#stopButton").attr("disabled", "disabled");
-					$("#boardContainer").hide();
+					$("#adminBoard").hide();
 					$("#canvas").show();
+					$("#boardButton").show();
+					$("#statsButton").hide();
+					$("#startButton").hide();
+					$("#stopButton").hide();
 					graph.start();
+				});
+				$("#boardButton").hide().click(function(){
+					graph.stop();
+					$("#canvas").hide();
+					$("#statsButton").show();
+					$("#boardButton").hide();
+					$("#adminBoard").show();
+					$("#startButton").show();
+					$("#stopButton").show();
+					board.start();
+                                        $("#stopButton").removeAttr("disabled");
+                                        $("#startButton").attr("disabled", "disabled");
 				});
 				$("#serverName").focusout(function(){
         			validateServer();
@@ -213,6 +232,7 @@
 				<input type="button" id="startButton" value="Start">
 				<input type="button" id="resetButton" value="Reset">
 				<input type="button" id="statsButton" value="Stats">
+				<input type="button" id="boardButton" value="Board">
 				<div class="error">ERROR ERROR ERROR ERROR</div>
 			</div>
 			<div class="boardTableContainer">

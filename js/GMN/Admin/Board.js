@@ -92,6 +92,10 @@ GMN.Admin.Board = function(_options) {
 				$("#stopButton").removeAttr("disabled");
 				$("#loginContainer").hide();
 				$("#boardContainer").show();
+				$("#statsButton").show();
+				$("#boardButton").hide();
+				$("#startButton").show();
+				$("#stopButton").show();
 			} else if(status === 401){
 				$(".error").text("ERROR: La contrasena de administrador es incorrecta.").show();
 			} else {

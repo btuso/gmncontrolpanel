@@ -2,7 +2,7 @@ GMN.Stats.updateGraph = function(_options){
 	var options = {
 		"refreshInterval":1000,
 		"graph":0,//0 : 30 seconds, 1 : 30 minutes, 2 : 24 hours
-		"Yamount":8
+		"Yamount":7
 	}
 	var refreshTime,
 		started = false;
@@ -20,7 +20,6 @@ GMN.Stats.updateGraph = function(_options){
 				stop();
 				//Despues hacer bien el "logout"
 				$("#canvas").hide();
-				$("#boardContainer").hide();
 				$("#loginContainer").show();
 				$(".error").text("ERROR " + status + ": " + data.message).show();
 			}
@@ -47,7 +46,6 @@ GMN.Stats.updateGraph = function(_options){
 			}
 		};
 		
-	
 		//Seleccion de datos segun tipo de grafico
 		
 		switch(options.graph){
@@ -89,12 +87,12 @@ GMN.Stats.updateGraph = function(_options){
 							'margin-top':(off+20-((((height-off)-((output.length)*6))/(output.length-1))/2))+"px"
 						});
 		output = "";
-		for(var i = params.stats.length-1;i>=1;i-=2)
+		for(var i = params.stats.length;i>=1;i-=2)
 			output += i + " ";
 		output += 0;
 		$("#Xscale").text(output)
 						.css({		       //50(rems del largo del canvas) - (cantidad de rem ocupadas por chars en la escala) / (cantidad de anotaciones en la escala)               ----0.017
-							'word-spacing':((50-(((((params.stats.length-1)/2)+1)*(1 + (0.007 * (params.stats.length))))-5))   /(((params.stats.length-1)/2)+1))+'rem',//Esto sirve para centrar la escala con word spacing y que el maximo y el minimo queden en las esquinas
+							'word-spacing':((50-((((params.stats.length/2)+1)*(1 + (0.007 * (params.stats.length + 1))))-5))   /((params.stats.length/2)+1))+'rem',//Esto sirve para centrar la escala con word spacing y que el maximo y el minimo queden en las esquinas
 						});
 		$("#Xtext").text(params.Xtext);
 		
