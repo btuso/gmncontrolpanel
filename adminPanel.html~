@@ -138,7 +138,7 @@
                     $("#stopButton").removeAttr("disabled");
                     $("#startButton").attr("disabled", "disabled");
 				});
-                $("#secondsButton").attr("disabled", "disabled").click(function(){
+                $("#secondsButton").click(function(){
                     graph.setMode(0);
                     $("#secondsButton").attr("disabled", "disabled");
                     $("#minutesButton").removeAttr("disabled");
@@ -149,6 +149,7 @@
                     $("#minutesButton").attr("disabled", "disabled");
                     $("#secondsButton").removeAttr("disabled");
                     $("#hoursButton").removeAttr("disabled");
+                    alert("asd");
                  });
                 $("#hoursButton").click(function(){
                     graph.setMode(2);

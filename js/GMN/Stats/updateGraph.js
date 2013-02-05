@@ -2,7 +2,7 @@ GMN.Stats.updateGraph = function(_options){
 	var options = {
 		"refreshInterval":1000,
 		"graph":0,//0 : 30 seconds, 1 : 30 minutes, 2 : 24 hours
-		"Yamount":8
+		"Yamount":5
 	}
 	var refreshTime,
 		started = false;
@@ -47,27 +47,35 @@ GMN.Stats.updateGraph = function(_options){
 			}
 		};
 		
-	
+
 		//Seleccion de datos segun tipo de grafico
-		
 		switch(options.graph){
 			case 0:
 				var biggest = 0;//Consigo el numero mas grande para hacer la escala del grafico
-				for(var i = 0;i<data.seconds.length;i++)
-					biggest = biggest < data.seconds[i] ? data.seconds[i] : biggest;
-				setParams({"Ytext":"Requests per second","Xtext":"Seconds ago","Yscale":(biggest+(biggest/4)),"Xscale":30,"stats":data.seconds});
+				for(var i = 0;i<data.Seconds.length;i++)
+					biggest = biggest < data.Seconds[i] ? data.Seconds[i] : biggest;
+				setParams({"Ytext":"Requests per second","Xtext":"Seconds ago","Yscale":(biggest+(biggest/4)),"Xscale":60,"stats":data.Seconds});
 				break;
 			case 1:
 				var biggest = 0;//Consigo el numero mas grande para hacer la escala del grafico
-				for(var i = 0;i<data.minutes.length;i++)
-					biggest = biggest < data.minutes[i] ? data.minutes[i] : biggest;
-				setParams({"Ytext":"Requests per minute","Xtext":"Minutes ago","Yscale":(biggest+(biggest/4)),"Xscale":30,"stats":data.minutes});
+                var tmp = data.Minutes.slice(0,60);
+				for(var i = 0;i<tmp.length;i++)
+					biggest = biggest < tmp[i] ? tmp[i] : biggest;
+				setParams({"Ytext":"Requests per minute","Xtext":"Minutes ago","Yscale":(biggest+(biggest/4)),"Xscale":60,"stats":tmp});
 				break;
 			case 2:
+	            var res = [];
 				var biggest = 0;//Consigo el numero mas grande para hacer la escala del grafico
-				for(var i = 0;i<data.hours.length;i++)
-					biggest = biggest < data.hours[i] ? data.hours[i] : biggest;
-				setParams({"Ytext":"Requests per hour","Xtext":"Hours ago","Yscale":(biggest+(biggest/4)),"Xscale":24,"stats":data.hours});
+                //60 * 24 = 1440
+                for(var i =0;i<(data.Minutes.length/60);i++){
+                    var tmp = data.Minutes.slice(i*60,(i*60)+59), suma = 0;
+                    for(var a = 0;a<tmp.length;a++)
+                        suma += tmp[a];
+                    res.push(suma);
+                }
+				for(var i = 0;i<res.length;i++)
+					biggest = biggest < res[i] ? res[i] : biggest;
+				setParams({"Ytext":"Requests per hour","Xtext":"Hours ago","Yscale":(biggest+(biggest/4)),"Xscale":24,"stats":res});
 		};
 		
 		//Ajuste de los textos
@@ -85,16 +93,16 @@ GMN.Stats.updateGraph = function(_options){
 		$("#Yscale").text(output.join("\n"))
 						.css({//		   (lugar a cubrir - (tamaño de chars   / cantidad de chars))+char/rem
 							'line-height':(((((height-off)-((output.length)*6))/(output.length-1))+6)/16)+'rem',
-							'width':((Math.floor(params.Yscale)+"").length * 0.56)+'rem',
+							'width':((Math.floor(params.Yscale)+"").length * 0.66)+'rem',
 							'margin-top':(off+20-((((height-off)-((output.length)*6))/(output.length-1))/2))+"px"
 						});
 		output = "";
-		for(var i = params.stats.length-1;i>=1;i-=2)
+		for(var i = params.stats.length;i>=1;i-=3)
 			output += i + " ";
 		output += 0;
 		$("#Xscale").text(output)
 						.css({		       //50(rems del largo del canvas) - (cantidad de rem ocupadas por chars en la escala) / (cantidad de anotaciones en la escala)               ----0.017
-							'word-spacing':((50-(((((params.stats.length-1)/2)+1)*(1 + (0.007 * (params.stats.length))))-5))   /(((params.stats.length-1)/2)+1))+'rem',//Esto sirve para centrar la escala con word spacing y que el maximo y el minimo queden en las esquinas
+							'word-spacing':((50-((((params.stats.length/3)+1)*(1 + (0.01 * (params.stats.length+1))))-5))   /((params.stats.length/3)+1))+'rem',//Esto sirve para centrar la escala con word spacing y que el maximo y el minimo queden en las esquinas
 						});
 		$("#Xtext").text(params.Xtext);
 		
@@ -108,7 +116,7 @@ GMN.Stats.updateGraph = function(_options){
 		offset.y = $("#myCanvas").height();//Offset vertical para no tener que calcular la altura al revez.
 		offset.x = $("#myCanvas").width();//Offset horizontal para poder graficar de izquierda a derecha
 		scale = {};
-		scale.x = (offset.x / params.Xscale);//Consigo la distancia que necesito desplazar el cursor horizontalmente (ancho de canvas / puntos de datos)
+		scale.x = (offset.x / (params.Xscale-1));//Consigo la distancia que necesito desplazar el cursor horizontalmente (ancho de canvas / puntos de datos)
 		scale.y = (offset.y / params.Yscale);//Lo mismo que arriba pero para el vertical
 		var c=document.getElementById("myCanvas");
 		var ctx=c.getContext("2d");
@@ -161,8 +169,13 @@ GMN.Stats.updateGraph = function(_options){
 		clearTimeout(refreshTime);
 	}
 
+    var setMode = function(mode){
+        options.graph = mode;        
+    }
+
 	return {
 		"start":start,
-		"stop":stop
+		"stop":stop,
+        "setMode":setMode
 	}
 }
